@@ -269,3 +269,166 @@ WIMLIB_ERR_XML ：这个WIM中的XML数据是无效的
 
 从指定的WIM镜像中提取0或更多路径（文件或目录树）
  
+ 
+##(3)修改WIMs
+
+简介：对一个WIMStruct进行改变，为保存WIMStuct到磁盘文件做准备
+
+###捕获和增加镜像
+
+正如上面基本WIM处理概念所描述。捕获一个新的WIM或者添加一个镜像到一个已存在的WIM是一个多步骤的过程。但是它的核心是 wimlib_add_image()或一个相同的函数。正常来讲， 
+
+wimlib_add_image()得到一个磁盘目录树并且逻辑添加它到一个WIMStruct作为一个新镜像。然而，这里还有一种特别NTFS卷捕获模式（当WIMLIB_ADD_FLAG_NTFS被指定的时候进
+
+入），它允许直接从一个没有挂载NTFS卷添加镜像。
+
+另一个函数wimlib_add_image_multisource()也提供类似功能，但是它允许结合多个文件或目录树加入到一个单个WIM镜像
+
+对于大多数WIM镜像的创建，也可以增加一个完全空的WIM镜像（使用wimlib_add_empty_image()），之后更新它（使用wimlib_update_image()）。
+
+###删除镜像
+
+wimlib_delete_image() 可以从一个WIMStruct中删除一个镜像。但是通常，必须调用wimlib_write()或者wimlib_overwrite()来其改变进行保存到磁盘的WIM文件中
+
+###输出WIM镜像
+
+wimlib_export_image() 可以从一个WIM复制，或者“输出”一个镜像到另一个WIM中。
+
+###其他修改
+
+wimlib_update_image()可以在一个WIM镜像中增加，删除和重命名文件
+
+wimlib_set_image_name(), wimlib_set_image_descripton(), wimlib_set_image_flags(), wimlib_set_image_property()可以改变其他镜像metadata
+
+wimlib_set_wim_info()可以改变关于WIM文件本身的信息，比如启动编号
+
+###结构体
+
+    wimlib_capture_source
+    一个传给wimlib_add_image_multisource()数据结构数组，用来指定创建一个WIM镜像的源 
+    struct  	wimlib_add_command
+    用来 WIMLIB_UPDATE_OP_ADD 操作的数据
+    struct  	wimlib_delete_command
+    用来 WIMLIB_UPDATE_OP_DELETE 操作的数据
+    struct  	wimlib_rename_command
+    用来 WIMLIB_UPDATE_OP_RENAME 操作的数据
+    struct  	wimlib_update_command
+    在一个WIM镜像上执行指定的一个更新操作
+    
+###宏
+
+###枚举
+
+    enum  	wimlib_update_op { WIMLIB_UPDATE_OP_ADD = 0, WIMLIB_UPDATE_OP_DELETE, WIMLIB_UPDATE_OP_RENAME }
+    用来指定执行的更新类型
+    
+###函数
+
+    I.int 	wimlib_add_empty_image (WIMStruct *wim, const wimlib_tchar *name, int *new_idx_ret)
+ 	添加一个空镜像到一个WIMStruct中
+ 
+    II.int 	wimlib_add_image (WIMStruct *wim, const wimlib_tchar *source, const wimlib_tchar *name, const wimlib_tchar *config_file, int add_flags)
+ 	增加一个镜像（从一个磁盘目录树或者NTFS卷）到WIMStruct中
+ 
+    III.int 	wimlib_add_image_multisource (WIMStruct *wim, const struct wimlib_capture_source *sources, size_t num_sources, const wimlib_tchar *name, const wimlib_tchar *config_file, int add_flags)
+ 	这个函数和wimlib_add_image()相同，除了它允许多个源结合到单一的WIM镜像
+ 
+    IV.int 	wimlib_add_tree (WIMStruct *wim, int image, const wimlib_tchar *fs_source_path, const wimlib_tchar *wim_target_path, int add_flags)
+ 	增加文件或者目录树Add the file or directory tree at fs_source_path on the filesystem to the location wim_target_path within the specified image of the wim. More...
+ 
+    V.int 	wimlib_delete_image (WIMStruct *wim, int image)
+ 	从一个WIMStruct中删除一个镜像，或者所有镜像
+ 
+    VI.int 	wimlib_delete_path (WIMStruct *wim, int image, const wimlib_tchar *path, int delete_flags)
+ 	从wim指定的镜像中删除路径
+ 
+    VII.int 	wimlib_export_image (WIMStruct *src_wim, int src_image, WIMStruct *dest_wim, const wimlib_tchar *dest_name, const wimlib_tchar *dest_description, int export_flags)
+ 	从一个WIMStruct到另一个WIMStruct中输出一个镜像或者所有镜像
+ 
+    VIII.int 	wimlib_reference_template_image (WIMStruct *wim, int new_image, WIMStruct *template_wim, int template_image, int flags)
+    声明一个新的增加镜像大部分和之前的镜像相同，但是捕获在之后的时间点，在间隔时间可能有一些修改
+ 
+    IX.int 	wimlib_rename_path (WIMStruct *wim, int image, const wimlib_tchar *source_path, const wimlib_tchar *dest_path)
+ 	在wim指定的镜像中重命名source_path到dest_path
+ 	
+    X.int 	wimlib_set_image_descripton (WIMStruct *wim, int image, const wimlib_tchar *description)
+ 	改变一个WIM镜像的描述符
+ 	
+    XI.int 	wimlib_set_image_flags (WIMStruct *wim, int image, const wimlib_tchar *flags)
+ 	改变在WIM的XML文档中存在<FLAGS>中的内容
+ 	
+    XII.int 	wimlib_set_image_name (WIMStruct *wim, int image, const wimlib_tchar *name)
+ 	改变WIM镜像的名字
+ 
+    XIII.int 	wimlib_set_image_property (WIMStruct *wim, int image, const wimlib_tchar *property_name, const wimlib_tchar *property_value)
+ 	自从wimlib1.8.3：从WIM的XML文档中增加，修改或者移除一个per-image property
+ 
+    XIV.int 	wimlib_set_wim_info (WIMStruct *wim, const struct wimlib_wim_info *info, int which)
+ 	设置关于WIM的基本信息
+ 
+    XV.int 	wimlib_update_image (WIMStruct *wim, int image, const struct wimlib_update_command *cmds, size_t num_cmds, int update_flags)
+ 	更新一个WIM镜像通过增加，删除，重命名文件或目录
+    
+##(4)写和覆写WIMs
+
+简介：在一个磁盘WIM文件中创建或者更新。wimlib_write()创建一个新的磁盘WIM文件，而wimlib_overwrite()更新一个已经存在WIM文件
+
+###宏
+
+###函数
+
+    I.int 	wimlib_overwrite (WIMStruct *wim, int write_flags, unsigned num_threads)
+ 	提交一个WIMStruct到磁盘，更新它的备份文件
+ 
+    II.int 	wimlib_set_output_chunk_size (WIMStruct *wim, uint32_t chunk_size)
+ 	设置一个WIMStruct的输出压缩chunk size
+ 
+    III.int 	wimlib_set_output_pack_chunk_size (WIMStruct *wim, uint32_t chunk_size)
+ 	和wimlib_set_output_chunk_size()相似,但是对写固态资源设置chunk size 
+ 	
+    IV.int 	wimlib_set_output_compression_type (WIMStruct *wim, enum wimlib_compression_type ctype)
+ 	设置一个WIMStruct的输出压缩类型
+ 
+    V.int 	wimlib_set_output_pack_compression_type (WIMStruct *wim, enum wimlib_compression_type ctype)
+ 	和wimlib_set_output_compression_type()相似,但是对写固态资源设置压缩类型 
+ 
+    VI.int 	wimlib_write (WIMStruct *wim, const wimlib_tchar *path, int image, int write_flags, unsigned num_threads)
+ 	对一个新的磁盘WIM文件写一个WIMStructs
+ 	
+    VII.int 	wimlib_write_to_fd (WIMStruct *wim, int fd, int image, int write_flags, unsigned num_threads)
+ 	和wimlib_write()类似, 但是直接对一个文件描述符写WIM
+ 	
+#3.使用相关描述
+
+##（1）wimlib-imagex append
+
+##（2）wimlib-imagex apply
+
+##（3）wimlib-imagex capture
+
+##（4）wimlib-imagex delete
+
+##（5）wimlib-imagex dir 
+
+##（6）wimlib-imagex export arguments...
+
+##（7）wimlib-imagex extract arguments...
+
+##（8）wimlib-imagex info arguments...
+
+##（9）wimlib-imagex join arguments...
+
+##（10）wimlib-imagex mount arguments...
+
+##（11）wimlib-imagex mountrw arguments...
+
+##（12）wimlib-imagex optimize arguments...
+
+##（13）wimlib-imagex split arguments...
+
+##（14）wimlib-imagex unmount arguments...
+
+##（15）wimlib-imagex update arguments...
+
+##（16）wimlib-imagex verify arguments...
+
