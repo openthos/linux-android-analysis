@@ -5,3 +5,4 @@ Try to know how to customize an android system.
 
 #related info
  - https://github.com/opengapps
+ - https://github.com/Androguide/FlashGordon
