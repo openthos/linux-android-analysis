@@ -1,0 +1,16 @@
+06-07 07:39:01.770 1428-1428/com.example.android_app_stroe E/AndroidRuntime: FATAL EXCEPTION: main
+                                                                             Process: com.example.android_app_stroe, PID: 1428
+                                                                             java.lang.IndexOutOfBoundsException: Invalid index 4, size is 4
+                                                                                 at java.util.ArrayList.throwIndexOutOfBoundsException(ArrayList.java:255)
+                                                                                 at java.util.ArrayList.get(ArrayList.java:308)
+                                                                                 at com.example.android_app_stroe.DownLoading$downloading_baseAdapter.getView(DownLoading.java:149)
+                                                                                 at com.example.android_app_stroe.ListView_height.setListViewHeightBasedOnChildren(ListView_height.java:20)
+                                                                                 at com.example.android_app_stroe.DownLoading$2.handleMessage(DownLoading.java:94)
+                                                                                 at android.os.Handler.dispatchMessage(Handler.java:102)
+                                                                                 at android.os.Looper.loop(Looper.java:135)
+                                                                                 at android.app.ActivityThread.main(ActivityThread.java:5257)
+                                                                                 at java.lang.reflect.Method.invoke(Native Method)
+                                                                                 at java.lang.reflect.Method.invoke(Method.java:372)
+                                                                                 at com.android.internal.os.ZygoteInit$MethodAndArgsCaller.run(ZygoteInit.java:903)
+                                                                                 at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:698)
+
