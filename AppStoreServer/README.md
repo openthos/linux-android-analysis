@@ -104,13 +104,101 @@ CREATE TABLE `game` (
 ```
 **updatesystem表**
 
+| Field               | Type         | Null | Key | Default | Extra          |含义|
+|---------------------|--------------|------|-----|---------|----------------|----|
+| id                  | int(11)      | NO   | PRI | NULL    | auto_increment |版本编号|
+| documentVersion     | varchar(200) | NO   |     | NULL    |                |版本号|
+| documentPreVersion  | varchar(200) | YES  |     | NULL    |                |上一版本号|
+| documentNextVersion | varchar(200) | YES  |     | NULL    |                |下一版本号|
+| commitTime          | datetime     | NO   |     | NULL    |                |提交时间|
+| submitter           | varchar(200) | NO   |     | NULL    |                |提交者|
+| md5                 | varchar(255) | NO   |     | NULL    |                |版本MD5|
+
+```
+建表语句
+
+CREATE TABLE `updatesystem` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `documentVersion` varchar(200) NOT NULL,
+  `documentPreVersion` varchar(200) DEFAULT NULL,
+  `documentNextVersion` varchar(200) DEFAULT NULL,
+  `commitTime` datetime NOT NULL,
+  `submitter` varchar(200) NOT NULL,
+  `md5` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+);
+
+```
+
 `注：其他的表根据功能设计`
 
 **四，代码结构**
 
-![CodeStruct](https://github.com/Entiy/AppStore/blob/master/pic/CodeStruct.png)
+![CodeStruct](https://github.com/openthos/customized-android-analysis/blob/master/AppStoreServer/pic/code1.png?raw=true)
 
+![CodeStruct](https://github.com/openthos/customized-android-analysis/blob/master/AppStoreServer/pic/code2.png?raw=true)
+
+```
+代码分为四个部分：
+
+servlet部分主要是controller用于响应请求，
+
+service部分业务逻辑处理，
+
+interface部分主要是对数据库功能的抽象，
+
+utils部分是一些辅助类
+
+```
 **五，代码详解**
+
+**1.数据库部分**
+
+**DataBase.java**：数据库操作接口，包含对数据库CURD的基本操作
+```
+public interface DataBase {
+
+	public Connection getConn();
+
+	public boolean InsertDML(String sql);
+	public boolean DeleDML(String sql);
+	public boolean UpdateDML(String sql);
+	public ResultSet QueryDML(String sql);
+	public void CloseAll();
+}
+```
+**DataBaseService.java：** 对DataBase接口的CURD进行实现
+
+**AppStoreController.java:** 这个servlet类主要是响应appstore客户端的页面展示数据的请求。
+
+**CheckUpdateController.java:** 响应版本检查的controller
+
+**CommentController.java:** 响应评论功能的controller，包括查询，添加，删除评论等
+
+**DownloadApkController.java:** 响应app下载的请求
+
+**DownloadCountCul.java:** 响应app下载次数的请求
+
+**UpdateSystemController.java:** 响应升级包的下载请求
+
+**CheckUpdateService.java:** 响应版本检测controller的业务处理类
+
+**CommentService.java:**  响应评论controller的业务处理类
+
+**DownloadApkService.java:** 响应app下载的业务处理类
+
+**DownloadUpdataSystemISOService.java:** 响应升级包下载的业务处理类
+
+**OperateService.java:** 核心类，响应appstore客户端数据加载的业务处理类
+
+**GetDBProperties.java:** 辅助性的类，用于获取数据库配置信息
+
+**DownloadFileUtil.java:** 辅助性类，用于下载文件的类
+
+**HttpsUtil.java:** https和http的请求的辅助类
+
+**MD5.java:** 升级包md5校验类
+
 
 **六，运行大致流程**
 
