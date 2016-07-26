@@ -200,7 +200,20 @@ public interface DataBase {
 **MD5.java:** 升级包md5校验类
 
 
-**六，运行大致流程**
+**六，URL详情**
+
+URL Base：https：//dev.openthos.org/appstore/AppStoreServer
+
+|子URL|参数名称|参数值|返回数据|
+|--------|--------|--------|--------------|
+|App_store|operate,classify|paihang，software，game|JSON格式数据：[{operate:"paihang_software"},{id:4,soft_name:"app4",dev_name:"app6",dev_id:"app6",update_time:"app6",soft_language:"app6",soft_version:"app6",soft_download_count:81,introduce:"app6",soft_size:10},{id:8,soft_name:"app8",dev_name:"app6",dev_id:"app6",update_time:"app6",soft_language:"app6",soft_version:"app6",soft_download_count:48,introduce:"app6",soft_size:10}]|
+|download|path|Software/10/10.apk|文件流|
+|count|id&classify|id=10&classify=Software|无返回(内部处理即可)|
+|iso|path|UpdateSystem|201607023.iso|文件流|
+|check|无|无|最新系统版本号|
+|comment|type,aid|add,query|JSON格式数据：[{id:2,aid:"10",content:"哈哈",username:"null",time:"2016-07-14"},{id:6,aid:"10",content:"骨头",username:"null",time:"2016-07-14"},{id:7,aid:"10",content:"",username:"null",time:"2016-07-14"}]|
+
+**七，运行大致流程**
 
 首先我们使用的是Tomcat容器，客户端发送请求到tomcat，tomcat通过配置文件找到相应的Servlet，
 
@@ -208,7 +221,7 @@ public interface DataBase {
 
 调用相应的Service对请求做具体的处理。如果用到数据库则进行对数据库的操作。之后进行返回。
 
-**七，注意事项**
+**八，注意事项**
 
 * 没有完成的基本功能需要添加，其他功能根据需要进行添加
 * 有些地方的设计是不合理的需要优化修改，比如表的设计，代码的编写
