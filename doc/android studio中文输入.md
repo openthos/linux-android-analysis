@@ -89,22 +89,22 @@ ps aux | grep fcitx
 fcitx-configtool
 ```
 执行后出现以下窗口，点击“+”符号选择输入法进行激活
-![image](https://github.com/openthos/linux-android-analysis/tree/master/doc/.pic/1.jpg)
+![image](https://github.com/openthos/linux-android-analysis/blob/master/doc/.pic/1.jpg?raw=true)
 
 将"Only Show Current Language"项取消
-![image](https://github.com/openthos/linux-android-analysis/tree/master/doc/.pic/2.jpg)
+![image](https://github.com/openthos/linux-android-analysis/blob/master/doc/.pic/2.jpg?raw=true)
 
 
 找到名为“pinyin”的选项（fcitx自带的中文拼音输入法），选中并点击右下角“OK”进行输入法激活
-![image](https://github.com/openthos/linux-android-analysis/tree/master/doc/.pic/3.jpg)
+![image](https://github.com/openthos/linux-android-analysis/blob/master/doc/.pic/3.jpg?raw=true)
 （如想要使用第三方输入法则需要在此步中找到对应的选项进行激活，例如上图中的Google Pinyin）
 
 
 选中“pinyin”点击下方“^”图标，将已激活的"pinyin" 设置为默认输入法
-![image](https://github.com/openthos/linux-android-analysis/tree/master/doc/.pic/4.jpg)
+![image](https://github.com/openthos/linux-android-analysis/blob/master/doc/.pic/4.jpg?raw=true)
 
 下图为设置完成的结果
-![image](https://github.com/openthos/linux-android-analysis/tree/master/doc/.pic/5.jpg)
+![image](https://github.com/openthos/linux-android-analysis/blob/master/doc/.pic/5.jpg?raw=true)
 
 ## 六、启动Android studio
 输入法配置完成后，执行一下代码打开Android studio即可输入中文
